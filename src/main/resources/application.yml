@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: spring-ai-tutorial
+  ai:
+    openai:
+      api:
+        key: open-ai-test-key
