@@ -1,11 +1,18 @@
 package spring.ai.tutorial.domain.openai.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.audio.tts.TextToSpeechPrompt;
+import org.springframework.ai.audio.tts.TextToSpeechResponse;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.embedding.Embedding;
+import org.springframework.ai.embedding.EmbeddingRequest;
+import org.springframework.ai.embedding.EmbeddingResponse;
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.ImageResponse;
 import org.springframework.ai.openai.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -71,6 +78,54 @@ public class OpenAIService {
     }
 
     // embedding model method
-    public List<float[]>
+    public List<float[]> generateEmbedding(List<String> texts, String model) {
+
+        OpenAiEmbeddingOptions embeddingOptions = OpenAiEmbeddingOptions.builder()
+                .model(model)
+                .build();
+
+        EmbeddingRequest prompt = new EmbeddingRequest(texts, embeddingOptions);
+
+        EmbeddingResponse response = openAiEmbeddingModel.call(prompt);
+
+        return response.getResults().stream()
+                .map(Embedding::getOutput)
+                .toList();
+    }
+
+    // image model method
+    public List<String> generateImages(String text, int count, int width, int height) {
+
+        OpenAiImageOptions imageOptions = OpenAiImageOptions.builder()
+                .quality("hd")
+                .n(count)
+                .width(width)
+                .height(height)
+                .build();
+
+        ImagePrompt prompt = new ImagePrompt(text, imageOptions);
+
+        ImageResponse response = openAiImageModel.call(prompt);
+
+        // image 경로를 리스트로 반환
+        return response.getResults().stream()
+                .map(imageGeneration -> imageGeneration.getOutput().getUrl())
+                .toList();
+    }
+
+    public byte[] tts(String text) {
+
+        OpenAiAudioSpeechOptions speechOptions = OpenAiAudioSpeechOptions.builder()
+                .responseFormat(OpenAiAudioSpeechOptions.AudioResponseFormat.MP3)
+                .speed(1.0)
+                .model("tts-1")
+                .build();
+
+        TextToSpeechPrompt prompt = new TextToSpeechPrompt(text, speechOptions);
+
+        TextToSpeechResponse response = openAiAudioSpeechModel.call(prompt);
+        return response.getResult().getOutput();
+    }
 
 }
+
