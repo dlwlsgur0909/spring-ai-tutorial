@@ -1,6 +1,9 @@
 package spring.ai.tutorial.domain.openai.service;
 
+import com.openai.models.audio.AudioResponseFormat;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
+import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.audio.tts.TextToSpeechPrompt;
 import org.springframework.ai.audio.tts.TextToSpeechResponse;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -14,6 +17,7 @@ import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.ai.openai.*;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -113,6 +117,7 @@ public class OpenAIService {
                 .toList();
     }
 
+    // tts
     public byte[] tts(String text) {
 
         OpenAiAudioSpeechOptions speechOptions = OpenAiAudioSpeechOptions.builder()
@@ -125,6 +130,24 @@ public class OpenAIService {
 
         TextToSpeechResponse response = openAiAudioSpeechModel.call(prompt);
         return response.getResult().getOutput();
+    }
+
+    // stt
+    public String stt(Resource audioFile) {
+
+        OpenAiAudioTranscriptionOptions transcriptionOptions = OpenAiAudioTranscriptionOptions.builder()
+                .language("ko") // 인식할 언어
+                .prompt("Ask not this, but ask that") // 음성 인식 전 참고할 텍스트 프롬프트
+                .temperature(0f)
+                .model("tts-1")
+                .responseFormat(AudioResponseFormat.VTT) // 결과 타입 지정 (VTT = 자막형식)
+                .build();
+
+        AudioTranscriptionPrompt prompt = new AudioTranscriptionPrompt(audioFile, transcriptionOptions);
+
+        AudioTranscriptionResponse response = openAiAudioTranscriptionModel.call(prompt);
+        return response.getResult().getOutput();
+
     }
 
 }
