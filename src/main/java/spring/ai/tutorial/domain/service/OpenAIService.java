@@ -1,4 +1,4 @@
-package spring.ai.tutorial.domain.openai.service;
+package spring.ai.tutorial.domain.service;
 
 import com.openai.models.audio.AudioResponseFormat;
 import lombok.RequiredArgsConstructor;
