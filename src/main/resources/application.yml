@@ -17,8 +17,6 @@ spring:
 #        format: json
         keep_alive: 5m
 
-
-
 #  ai:
 #    openai:
 #      api-key: open-ai-test-key
