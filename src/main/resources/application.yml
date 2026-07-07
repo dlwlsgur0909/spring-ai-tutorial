@@ -13,7 +13,7 @@ spring:
         chat:
           include: true # chat model bean 생성 여부
       chat:
-        model: llama3.2:3b
+        model: gemma3
 #        format: json
         keep_alive: 5m
 
