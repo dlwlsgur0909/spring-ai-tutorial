@@ -1,6 +1,24 @@
 spring:
   application:
     name: spring-ai-tutorial
+  ai:
+    model:
+      chat: ollama
+    ollama:
+      base-url: http://localhost:11434 # ollama default url
+      init:
+        pull-model-strategy: never # 모델이 없는 경우 전략
+        timeout: 1m # 모델 pull 또는 초기화 대기 시간
+        max-retries: 0 # model 초기화 실패 시 재시도 횟수
+        chat:
+          include: true # chat model bean 생성 여부
+      chat:
+        model: llama3.2:3b
+#        format: json
+        keep_alive: 5m
+
+
+
 #  ai:
 #    openai:
 #      api-key: open-ai-test-key
