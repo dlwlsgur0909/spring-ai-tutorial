@@ -1,12 +1,10 @@
 spring:
   application:
     name: spring-ai-tutorial
-  ai:
-    openai:
-      api-key: open-ai-test-key
-    huggingface:
-      chat:
-        api-key: ${HUGGINGFACE_API_KEY}
-        url:
-        options:
-          model: mistralai/Mistral-7B-Instruct
+#  ai:
+#    openai:
+#      api-key: open-ai-test-key
+#    huggingface:
+#      chat:
+#        api-key: ${HUGGINGFACE_API_KEY}
+#        url: https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct
