@@ -2,13 +2,12 @@ package spring.ai.tutorial.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import spring.ai.tutorial.domain.ChatEntity;
 import spring.ai.tutorial.service.AIService;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -32,5 +31,11 @@ public class ChatController {
     @ResponseBody
     public Flux<String> chatStream(@RequestBody Map<String, String> body) {
         return aiService.generateStreamWithMultiTurn(body.get("text"));
+    }
+
+    @GetMapping ("/chat/history/{userId}")
+    @ResponseBody
+    public List<ChatEntity> getChatHistory(@PathVariable("userId") String userId) {
+        return aiService.readAllChats(userId);
     }
 }
