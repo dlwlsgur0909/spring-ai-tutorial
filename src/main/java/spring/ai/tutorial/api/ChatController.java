@@ -31,6 +31,6 @@ public class ChatController {
     @PostMapping("/chat/stream")
     @ResponseBody
     public Flux<String> chatStream(@RequestBody Map<String, String> body) {
-        return aiService.generateStream(body.get("text"));
+        return aiService.generateStreamWithMultiTurn(body.get("text"));
     }
 }

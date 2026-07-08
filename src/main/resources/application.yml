@@ -1,6 +1,11 @@
 spring:
   application:
     name: spring-ai-tutorial
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/spring_ai_tutorial?serverTimezone=UTC&useSSL=false
+    username: root
+    password: admin1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
   ai:
     model:
       chat: ollama
@@ -16,6 +21,10 @@ spring:
         model: gemma3
 #        format: json
         keep_alive: 5m
+        memory:
+          repository:
+            jdbc:
+              initialize-schema: never
 
 #  ai:
 #    openai:
