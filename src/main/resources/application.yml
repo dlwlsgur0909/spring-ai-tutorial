@@ -6,6 +6,12 @@ spring:
     username: root
     password: admin1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
   ai:
     model:
       chat: ollama
