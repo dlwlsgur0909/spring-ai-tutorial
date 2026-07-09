@@ -10,7 +10,7 @@ import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
-import spring.ai.tutorial.domain.ChatEntity;
+import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.repository.ChatRepository;
 
 import java.util.List;
@@ -44,10 +44,10 @@ public class AIService {
     public Flux<String> generateStreamWithMultiTurn(String text) {
 
         // 유저 & 페이지 별 ChatMemory를 관리하기 위한 ID
-        String userId = "test" + "_" + "1";
+        String conversationId = "test" + "_" + "1";
 
         // 전체 대화 저장용
-        ChatEntity chatUser = new ChatEntity(userId, text, MessageType.USER);
+        Chat chatUser = new Chat(conversationId, text, MessageType.USER);
 
         // ChatMemory는 보통 빈으로 등록해서 사용
         ChatMemory chatMemory = MessageWindowChatMemory.builder()
@@ -70,19 +70,19 @@ public class AIService {
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec
                                 .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
-                                .param(ChatMemory.CONVERSATION_ID, userId)
+                                .param(ChatMemory.CONVERSATION_ID, conversationId)
                 )
                 .stream()
                 .content()
                 .doOnNext(responseBuffer::append)
                 .doOnComplete(() -> {
-                    ChatEntity chatAssistant = new ChatEntity(userId, responseBuffer.toString(), MessageType.ASSISTANT);
+                    Chat chatAssistant = new Chat(conversationId, responseBuffer.toString(), MessageType.ASSISTANT);
                     chatRepository.saveAll(List.of(chatUser, chatAssistant));
                 });
     }
 
-    public List<ChatEntity> readAllChats(String userId) {
-        return chatRepository.findByUserIdOrderByCreatedAtAsc(userId);
+    public List<Chat> readAllChats(String userId) {
+        return chatRepository.findByConversationIdOrderByCreatedAtAsc(userId);
     }
 
 }

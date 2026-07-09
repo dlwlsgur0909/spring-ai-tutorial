@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.MessageType;
 
 import java.time.LocalDateTime;
@@ -13,14 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatEntity {
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name = "user_id")
-    public String userId;
+    @Column(name = "conversation_id")
+    public String conversationId;
 
     @Column(name = "content")
     public String content;
@@ -32,8 +31,8 @@ public class ChatEntity {
     @Column(name = "created_at", updatable = false)
     public LocalDateTime createdAt;
 
-    public ChatEntity(String userId, String content, MessageType type) {
-        this.userId = userId;
+    public Chat(String conversationId, String content, MessageType type) {
+        this.conversationId = conversationId;
         this.content = content;
         this.type = type;
     }

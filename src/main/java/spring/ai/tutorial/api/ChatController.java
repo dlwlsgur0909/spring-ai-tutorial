@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import spring.ai.tutorial.domain.ChatEntity;
+import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.service.AIService;
 
 import java.util.List;
@@ -33,9 +33,9 @@ public class ChatController {
         return aiService.generateStreamWithMultiTurn(body.get("text"));
     }
 
-    @GetMapping ("/chat/history/{userId}")
+    @GetMapping ("/chat/history/{conversationId}")
     @ResponseBody
-    public List<ChatEntity> getChatHistory(@PathVariable("userId") String userId) {
-        return aiService.readAllChats(userId);
+    public List<Chat> getChatHistory(@PathVariable("conversationId") String conversationId) {
+        return aiService.readAllChats(conversationId);
     }
 }
