@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -24,7 +24,7 @@ spring:
         chat:
           include: true # chat model bean 생성 여부
       chat:
-        model: gemma3
+        model: gemma4 # gemma3는 tool calling을 지원하지 않아서 모델 변경
 #        format: json
         keep_alive: 5m
         memory:

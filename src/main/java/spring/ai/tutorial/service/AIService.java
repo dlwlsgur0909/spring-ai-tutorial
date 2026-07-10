@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.dto.CityResponseDTO;
 import spring.ai.tutorial.repository.ChatRepository;
+import spring.ai.tutorial.tools.ChatTools;
 
 import java.util.List;
 
@@ -67,6 +68,8 @@ public class AIService {
         /*
         advisor()를 통해서 MessageChatMemoryAdvisor를 등록하면
         자동으로 UserMessage와 AssistantMessage를 저장하기 때문에 chatMemory에 명시적으로 add 할 필요가 없다
+        추가로 Chat Memory Advisor를 사용하는 경우에는 response 생성에 실패해도 spring_ai_chat_memory 테이블에
+        사용자의 prompt가 저장된다
          */
          // chatMemory.add(conversationId, new UserMessage(text)); // 신규 메세지 추가
 
@@ -74,6 +77,7 @@ public class AIService {
         StringBuilder responseBuffer = new StringBuilder();
 
         return chatClient.prompt()
+                .tools(new ChatTools())
                 .user(text)
                 .advisors(advisorSpec ->
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
