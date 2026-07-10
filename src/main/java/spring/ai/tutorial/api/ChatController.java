@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import spring.ai.tutorial.domain.Chat;
+import spring.ai.tutorial.dto.CityResponseDTO;
 import spring.ai.tutorial.service.AIService;
 
 import java.util.List;
@@ -25,6 +26,12 @@ public class ChatController {
     @ResponseBody
     public String chat(@RequestBody Map<String, String> body) {
         return aiService.generate(body.get("text"));
+    }
+
+    @PostMapping("/chat/structured-output")
+    @ResponseBody
+    public CityResponseDTO chatStructuredOutput(@RequestBody Map<String, String> body) {
+        return aiService.generateWithStructuredOutput(body.get("text"));
     }
 
     @PostMapping("/chat/stream")

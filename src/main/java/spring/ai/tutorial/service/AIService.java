@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import spring.ai.tutorial.domain.Chat;
+import spring.ai.tutorial.dto.CityResponseDTO;
 import spring.ai.tutorial.repository.ChatRepository;
 
 import java.util.List;
@@ -29,6 +30,14 @@ public class AIService {
                 .user(text)
                 .call()
                 .content();
+    }
+
+    // stream()에서는 structured output을 바로 적용할 수 없기에 call() 메서드에 적용
+    public CityResponseDTO generateWithStructuredOutput(String text) {
+        return chatClient.prompt()
+                .user(text)
+                .call()
+                .entity(CityResponseDTO.class);
     }
 
     // 멀티턴 기능 구현 전
