@@ -66,7 +66,7 @@ public class AIService {
                 .build();
 
         /*
-        advisor()를 통해서 MessageChatMemoryAdvisor를 등록하면
+        advisors()를 통해서 MessageChatMemoryAdvisor를 등록하면
         자동으로 UserMessage와 AssistantMessage를 저장하기 때문에 chatMemory에 명시적으로 add 할 필요가 없다
         추가로 Chat Memory Advisor를 사용하는 경우에는 response 생성에 실패해도 spring_ai_chat_memory 테이블에
         사용자의 prompt가 저장된다

@@ -2,13 +2,13 @@ spring:
   application:
     name: spring-ai-tutorial
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/spring_ai_tutorial?serverTimezone=UTC&useSSL=false
-    username: root
+    url: jdbc:postgresql://localhost:5432/spring_ai_tutorial
+    username: postgres
     password: admin1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
