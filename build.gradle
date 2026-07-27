@@ -31,8 +31,10 @@ dependencies {
 //    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
 //    implementation "org.springframework.ai:spring-ai-starter-model-huggingface"
 
-    // Spring AI - PgVector Store 스타터 (VectorStore 제공
+    // Spring AI - PgVector Store 스타터 (VectorStore 제공)
     implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
+    implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+    implementation "org.springframework.ai:spring-ai-rag"
 //    implementation 'org.springframework.ai:spring-ai-starter-vector-store-chroma'
 //    implementation 'org.springframework.ai:spring-ai-starter-vector-store-elasticsearch'
 
