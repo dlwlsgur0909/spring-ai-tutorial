@@ -7,6 +7,9 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -25,6 +28,7 @@ public class AIService {
     private final ChatClient chatClient;
     private final ChatMemoryRepository chatMemoryRepository;
     private final ChatRepository chatRepository;
+    private final VectorStore vectorStore;
 
     public String generate(String text) {
         return chatClient.prompt()
@@ -76,13 +80,25 @@ public class AIService {
         // 응답 메세지를 저장할 버퍼
         StringBuilder responseBuffer = new StringBuilder();
 
+        /*
+        RAG 제공을 위한 advisor 생성
+        Advisor도 보통 Bean으로 등록해서 사용한다
+        * */
+        RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(VectorStoreDocumentRetriever.builder()
+                        .vectorStore(vectorStore)
+                        .similarityThreshold(0.8)
+                        .topK(5)
+                        .build()
+                ).build();
+
         return chatClient.prompt()
                 .tools(new ChatTools())
                 .user(text)
                 .advisors(advisorSpec ->
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec
-                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), advisor)
                                 .param(ChatMemory.CONVERSATION_ID, conversationId)
                 )
                 .stream()

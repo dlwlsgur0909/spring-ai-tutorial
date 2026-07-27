@@ -15,14 +15,17 @@ spring:
   ai:
     model:
       chat: ollama
+      embedding: ollama
     ollama:
       base-url: http://localhost:11434 # ollama default url
       init:
-        pull-model-strategy: never # 모델이 없는 경우 전략
+        pull-model-strategy: never # 초기화 전략 (모델이 없는 경우 pull 여부)
         timeout: 1m # 모델 pull 또는 초기화 대기 시간
         max-retries: 0 # model 초기화 실패 시 재시도 횟수
         chat:
-          include: true # chat model bean 생성 여부
+          include: true # 초기화 전략에 포함 여부
+        embedding:
+          include: true # 초기화 전략에 포함 여부
       chat:
         model: gemma4 # gemma3는 tool calling을 지원하지 않아서 모델 변경
 #        format: json
@@ -31,6 +34,9 @@ spring:
           repository:
             jdbc:
               initialize-schema: never
+      embedding:
+        model: nomic-embed-text
+        keep_alive: 5m # 임베딩이 끝난 후 모델을 메모리에 유지할 시간으로 기본값은 5m
 
 #  ai:
 #    openai:
