@@ -21,6 +21,7 @@ public class Chat {
     @Column(name = "conversation_id")
     public String conversationId;
 
+    @Lob
     @Column(name = "content")
     public String content;
 

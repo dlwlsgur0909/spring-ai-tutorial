@@ -8,6 +8,7 @@ import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
@@ -82,8 +83,19 @@ public class AIService {
         StringBuilder responseBuffer = new StringBuilder();
 
         /*
+        RetrievalAugmentationAdvisor는 기본적으로 Context에 검색 결과가 없다면 LLM에게 답변하지 않도록 한다
+        이때 allowEmptyContext(true) 설정을 통해서 Context에 검색 결과가 없어도 LLM이 답변을 할 수 있게 한다
+         */
+        ContextualQueryAugmenter queryAugmenter = ContextualQueryAugmenter.builder()
+                .allowEmptyContext(true)
+                .build();
+
+        /*
         RAG 제공을 위한 advisor 생성
         Advisor도 보통 Bean으로 등록해서 사용한다
+        QuestionAnswerAdvisor는 단순 채팅 같은 기능에 사용하고
+        RetrievalAugmentationAdvisor는 좀 더 복잡한 기능에 사용한다고 한다
+        이건 좀 더 찾아보자
         * */
         RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
@@ -91,7 +103,9 @@ public class AIService {
                         .similarityThreshold(0.8)
                         .topK(5)
                         .build()
-                ).build();
+                )
+                .queryAugmenter(queryAugmenter)
+                .build();
 
         return chatClient.prompt()
                 .tools(new ChatTools())
