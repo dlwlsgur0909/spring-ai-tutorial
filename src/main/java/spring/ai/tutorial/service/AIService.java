@@ -13,6 +13,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import spring.ai.tutorial.config.TestAdvisor;
 import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.dto.CityResponseDTO;
 import spring.ai.tutorial.repository.ChatRepository;
@@ -98,7 +99,7 @@ public class AIService {
                 .advisors(advisorSpec ->
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec
-                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), advisor)
+                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), advisor, new TestAdvisor())
                                 .param(ChatMemory.CONVERSATION_ID, conversationId)
                 )
                 .stream()
