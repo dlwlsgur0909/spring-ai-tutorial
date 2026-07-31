@@ -33,10 +33,19 @@ dependencies {
 
     // Spring AI - PgVector Store 스타터 (VectorStore 제공)
     implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
-    implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
-    implementation "org.springframework.ai:spring-ai-rag"
 //    implementation 'org.springframework.ai:spring-ai-starter-vector-store-chroma'
 //    implementation 'org.springframework.ai:spring-ai-starter-vector-store-elasticsearch'
+    // QuestionAnswerAdvisor를 위한 의존성
+//    implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+    // RetrievalAugmentationAdvisor, ContextualQueryAugmenter를 위한 의존성
+    implementation "org.springframework.ai:spring-ai-rag"
+
+    // Markdown Document Reader
+    implementation "org.springframework.ai:spring-ai-markdown-document-reader"
+    // PDF Document Reader
+    implementation "org.springframework.ai:spring-ai-pdf-document-reader"
+    // Apache Tika Document Reader (DOCX, PPTX, HTML, PDF 등)
+    implementation "org.springframework.ai:spring-ai-tika-document-reader"
 
     // 내부에 spring-boot-starter-jdbc 포함
     implementation 'org.springframework.ai:spring-ai-starter-model-chat-memory-repository-jdbc'

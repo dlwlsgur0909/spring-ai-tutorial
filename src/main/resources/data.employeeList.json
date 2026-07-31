@@ -1,0 +1,63 @@
+[
+  {
+    "id": 1001,
+    "name": "김철수",
+    "department": "Backend",
+    "position": "Senior Developer",
+    "email": "chulsoo@example.com",
+    "skills": [
+      "Java",
+      "Spring Boot",
+      "Spring AI",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "id": 1002,
+    "name": "이영희",
+    "department": "AI",
+    "position": "ML Engineer",
+    "email": "younghee@example.com",
+    "skills": [
+      "Python",
+      "PyTorch",
+      "Vector Database"
+    ]
+  },
+  {
+    "id": 1003,
+    "name": "박민수",
+    "department": "Frontend",
+    "position": "Frontend Developer",
+    "email": "minsu@example.com",
+    "skills": [
+      "React",
+      "TypeScript",
+      "Next.js"
+    ]
+  },
+  {
+    "id": 1004,
+    "name": "최지은",
+    "department": "DevOps",
+    "position": "DevOps Engineer",
+    "email": "jieun@example.com",
+    "skills": [
+      "Docker",
+      "Kubernetes",
+      "AWS"
+    ]
+  },
+  {
+    "id": 1005,
+    "name": "정현우",
+    "department": "Data",
+    "position": "Data Engineer",
+    "email": "hyunwoo@example.com",
+    "skills": [
+      "Spark",
+      "Kafka",
+      "MongoDB"
+    ]
+  }
+]
