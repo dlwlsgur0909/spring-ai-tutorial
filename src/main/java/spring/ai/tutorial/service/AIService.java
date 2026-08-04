@@ -32,6 +32,8 @@ public class AIService {
     private final ChatRepository chatRepository;
     private final VectorStore vectorStore;
 
+    private final ChatTools chatTools;
+
     public String generate(String text) {
         return chatClient.prompt()
                 .user(text)
@@ -108,7 +110,7 @@ public class AIService {
                 .build();
 
         return chatClient.prompt()
-                .tools(new ChatTools())
+                .tools(chatTools)
                 .user(text)
                 .advisors(advisorSpec ->
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
