@@ -14,7 +14,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
-import spring.ai.tutorial.config.TestAdvisor;
+import spring.ai.tutorial.config.LoggingAdvisor;
 import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.dto.CityResponseDTO;
 import spring.ai.tutorial.repository.ChatRepository;
@@ -32,6 +32,7 @@ public class AIService {
     private final ChatRepository chatRepository;
     private final VectorStore vectorStore;
 
+    private final LoggingAdvisor loggingAdvisor;
     private final ChatTools chatTools;
 
     public String generate(String text) {
@@ -99,7 +100,7 @@ public class AIService {
         RetrievalAugmentationAdvisor는 좀 더 복잡한 기능에 사용한다고 한다
         이건 좀 더 찾아보자
         * */
-        RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()
+        RetrievalAugmentationAdvisor ragAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
                         .vectorStore(vectorStore)
                         .similarityThreshold(0.8)
@@ -115,7 +116,7 @@ public class AIService {
                 .advisors(advisorSpec ->
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec
-                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), advisor, new TestAdvisor())
+                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), ragAdvisor, loggingAdvisor)
                                 .param(ChatMemory.CONVERSATION_ID, conversationId)
                 )
                 .stream()

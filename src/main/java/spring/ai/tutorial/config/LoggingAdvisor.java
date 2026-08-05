@@ -7,9 +7,11 @@ import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisorChain;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-public class TestAdvisor implements CallAdvisor, StreamAdvisor {
+@Component
+public class LoggingAdvisor implements CallAdvisor, StreamAdvisor {
     @Override
     public ChatClientResponse adviseCall(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
         System.out.println("========== PROMPT ==========");
