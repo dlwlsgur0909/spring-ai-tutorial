@@ -7,6 +7,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -93,6 +94,9 @@ public class AIService {
                 .allowEmptyContext(true)
                 .build();
 
+
+
+
         /*
         RAG 제공을 위한 advisor 생성
         Advisor도 보통 Bean으로 등록해서 사용한다
@@ -128,7 +132,17 @@ public class AIService {
                 });
     }
 
+//    @Transactional
     public List<Chat> readAllChats(String userId) {
+
+//        List<Document> docs = List.of(
+//                new Document("환불은 구매 후 7일 이내 가능합니다."),
+//                new Document("배송은 평균 2일이 소요됩니다."),
+//                new Document("벤틀리는 현재 품절입니다.")
+//        );
+//
+//        vectorStore.add(docs);
+
         return chatRepository.findByConversationIdOrderByCreatedAtAsc(userId);
     }
 
