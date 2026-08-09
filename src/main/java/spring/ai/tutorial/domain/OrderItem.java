@@ -19,7 +19,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnore // 추후 엔티티 반환이 아닌 DTO 반환으로 변경하면 삭제할 예정
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)

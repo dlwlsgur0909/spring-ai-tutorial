@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import spring.ai.tutorial.domain.Chat;
-import spring.ai.tutorial.dto.CityResponseDTO;
+import spring.ai.tutorial.dto.CityResponse;
 import spring.ai.tutorial.service.AIService;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class ChatController {
 
     @PostMapping("/chat/structured-output")
     @ResponseBody
-    public CityResponseDTO chatStructuredOutput(@RequestBody Map<String, String> body) {
+    public CityResponse chatStructuredOutput(@RequestBody Map<String, String> body) {
         return aiService.generateWithStructuredOutput(body.get("text"));
     }
 

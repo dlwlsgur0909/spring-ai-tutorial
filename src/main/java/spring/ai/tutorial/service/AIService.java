@@ -7,7 +7,6 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
-import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import spring.ai.tutorial.config.LoggingAdvisor;
 import spring.ai.tutorial.domain.Chat;
-import spring.ai.tutorial.dto.CityResponseDTO;
+import spring.ai.tutorial.dto.CityResponse;
 import spring.ai.tutorial.repository.ChatRepository;
 import spring.ai.tutorial.tools.ChatTools;
 
@@ -44,11 +43,11 @@ public class AIService {
     }
 
     // stream()에서는 structured output을 바로 적용할 수 없기에 call() 메서드에 적용
-    public CityResponseDTO generateWithStructuredOutput(String text) {
+    public CityResponse generateWithStructuredOutput(String text) {
         return chatClient.prompt()
                 .user(text)
                 .call()
-                .entity(CityResponseDTO.class);
+                .entity(CityResponse.class);
     }
 
     // 멀티턴 기능 구현 전
