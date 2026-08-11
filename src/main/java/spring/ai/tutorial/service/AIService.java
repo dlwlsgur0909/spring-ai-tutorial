@@ -7,6 +7,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
@@ -137,7 +138,8 @@ public class AIService {
 //        List<Document> docs = List.of(
 //                new Document("환불은 구매 후 7일 이내 가능합니다."),
 //                new Document("배송은 평균 2일이 소요됩니다."),
-//                new Document("벤틀리는 현재 품절입니다.")
+//                new Document("벤틀리는 현재 품절입니다."),
+//                new Document("아이폰 17은 배송에 평균 5일 정도 걸립니다.")
 //        );
 //
 //        vectorStore.add(docs);
