@@ -17,6 +17,7 @@ import reactor.core.publisher.Flux;
 import spring.ai.tutorial.config.LoggingAdvisor;
 import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.dto.CityResponse;
+import spring.ai.tutorial.dto.QueryRoute;
 import spring.ai.tutorial.repository.ChatRepository;
 import spring.ai.tutorial.tools.ChatTools;
 
@@ -27,6 +28,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AIService {
 
+    private final QueryRouter queryRouter;
+    
     private final ChatClient chatClient;
     private final ChatMemoryRepository chatMemoryRepository;
     private final ChatRepository chatRepository;
@@ -65,6 +68,8 @@ public class AIService {
         // 유저 & 페이지 별 ChatMemory를 관리하기 위한 ID
         String conversationId = "test" + "_" + "1";
 
+        QueryRoute route = queryRouter.route(text);
+        
         // 전체 대화 저장용
         Chat chatUser = new Chat(conversationId, text, MessageType.USER);
 
@@ -93,9 +98,6 @@ public class AIService {
                 .allowEmptyContext(true)
                 .build();
 
-
-
-
         /*
         RAG 제공을 위한 advisor 생성
         Advisor도 보통 Bean으로 등록해서 사용한다
@@ -113,14 +115,23 @@ public class AIService {
                 .queryAugmenter(queryAugmenter)
                 .build();
 
+        System.out.println("route.needProduct() = " + route.needProduct());
+        System.out.println("route.needRag() = " + route.needRag());
+        
         return chatClient.prompt()
                 .tools(chatTools)
                 .user(text)
-                .advisors(advisorSpec ->
+                .advisors(advisorSpec -> {
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec
-                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), ragAdvisor, loggingAdvisor)
-                                .param(ChatMemory.CONVERSATION_ID, conversationId)
+                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), loggingAdvisor);
+                        
+                        if (route.needRag()) {
+                            advisorSpec.advisors(ragAdvisor);
+                        }
+                                
+                        advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId);
+                    }
                 )
                 .stream()
                 .content()
