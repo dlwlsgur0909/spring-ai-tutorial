@@ -1,5 +1,9 @@
 package spring.ai.tutorial.dto;
 
-public record QueryRoute(boolean needProduct, boolean needRag) {
+import java.util.List;
+import java.util.Map;
 
+public record QueryRoute(List<Action> actions) {
+
+    public record Action(String type, Map<String, Object> parameters) {}
 }

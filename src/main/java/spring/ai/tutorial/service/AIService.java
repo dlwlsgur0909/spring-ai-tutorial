@@ -68,6 +68,7 @@ public class AIService {
         // 유저 & 페이지 별 ChatMemory를 관리하기 위한 ID
         String conversationId = "test" + "_" + "1";
 
+        // 사용자의 질문을 LLM에게 전달하기 전에 라우터를 사용해서 tool과 RAG의 사용 여부를 결정한다
         QueryRoute route = queryRouter.route(text);
         
         // 전체 대화 저장용
@@ -123,8 +124,7 @@ public class AIService {
                 .user(text)
                 .advisors(advisorSpec -> {
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
-                        advisorSpec
-                                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), loggingAdvisor);
+                        advisorSpec.advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), loggingAdvisor);
                         
                         if (route.needRag()) {
                             advisorSpec.advisors(ragAdvisor);
