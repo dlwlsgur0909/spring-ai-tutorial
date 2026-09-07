@@ -1,5 +1,6 @@
 package spring.ai.tutorial.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -20,8 +21,11 @@ import spring.ai.tutorial.dto.CityResponse;
 import spring.ai.tutorial.dto.QueryRoute;
 import spring.ai.tutorial.repository.ChatRepository;
 import spring.ai.tutorial.tools.ChatTools;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class AIService {
 
     private final LoggingAdvisor loggingAdvisor;
     private final ChatTools chatTools;
+    private final QueryOrchestrator queryOrchestrator;
+    private final ObjectMapper objectMapper;
 
     public String generate(String text) {
         return chatClient.prompt()
@@ -70,6 +76,19 @@ public class AIService {
 
         // 사용자의 질문을 LLM에게 전달하기 전에 라우터를 사용해서 tool과 RAG의 사용 여부를 결정한다
         QueryRoute route = queryRouter.route(text);
+
+        System.out.println("route = " + route);
+
+        Map<String, Object> executionResultMap = queryOrchestrator.execute(route);
+
+        String executionResultJson;
+        try {
+            executionResultJson = objectMapper.writeValueAsString(executionResultMap);
+        } catch (JacksonException e) {
+            throw new RuntimeException("Unable to convert executionResultMap to JSON", e);
+        }
+
+        System.out.println("executionResultJson = " + executionResultJson);
         
         // 전체 대화 저장용
         Chat chatUser = new Chat(conversationId, text, MessageType.USER);
@@ -116,20 +135,23 @@ public class AIService {
                 .queryAugmenter(queryAugmenter)
                 .build();
 
-        System.out.println("route.needProduct() = " + route.needProduct());
-        System.out.println("route.needRag() = " + route.needRag());
-        
         return chatClient.prompt()
-                .tools(chatTools)
-                .user(text)
+                // .tools(chatTools) Action 방식에서는 ChatTool을 사용하지 않는다
+                .user("""
+                        사용자 질문:
+                        %s
+                        
+                        시스템이 조회한 데이터:
+                        %s
+                        
+                        위 데이터를 기반으로 사용자 질문에 답변하세요.
+                        데이터에 없는 내용은 추측하지 마세요.
+                        """
+                        .formatted(text, executionResultJson)
+                )
                 .advisors(advisorSpec -> {
                         // ChatClient를 스프링에서 자동 생성하는 빈 대신 명시적으로 등록하면 advisor도 한번만 설정하면 된다
                         advisorSpec.advisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), loggingAdvisor);
-                        
-                        if (route.needRag()) {
-                            advisorSpec.advisors(ragAdvisor);
-                        }
-                                
                         advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId);
                     }
                 )
