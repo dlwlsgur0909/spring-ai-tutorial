@@ -11,6 +11,7 @@ import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.util.JsonHelper;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +43,7 @@ public class AIService {
     private final LoggingAdvisor loggingAdvisor;
     private final ChatTools chatTools;
     private final QueryOrchestrator queryOrchestrator;
-    private final ObjectMapper objectMapper;
+    private final JsonHelper jsonHelper;
 
     public String generate(String text) {
         return chatClient.prompt()
@@ -79,14 +80,11 @@ public class AIService {
 
         System.out.println("route = " + route);
 
+        // Orchestrator를 통해 필요한 쿼리를 실행하고 결과를 Map 형태로 저장한다
         Map<String, Object> executionResultMap = queryOrchestrator.execute(route);
 
-        String executionResultJson;
-        try {
-            executionResultJson = objectMapper.writeValueAsString(executionResultMap);
-        } catch (JacksonException e) {
-            throw new RuntimeException("Unable to convert executionResultMap to JSON", e);
-        }
+        // 쿼리 실행 결과인 객체(엔티티)를 JSON 문자열로 변환한다 -> Map 형태 그대로 사용하면 LLM에 객체의 주소인 Product@7ab32 같은 값이 전달된다
+        String executionResultJson = jsonHelper.toJson(executionResultMap);
 
         System.out.println("executionResultJson = " + executionResultJson);
         
