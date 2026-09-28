@@ -1,6 +1,5 @@
 package spring.ai.tutorial.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -21,9 +20,6 @@ import spring.ai.tutorial.domain.Chat;
 import spring.ai.tutorial.dto.CityResponse;
 import spring.ai.tutorial.dto.QueryRoute;
 import spring.ai.tutorial.repository.ChatRepository;
-import spring.ai.tutorial.tools.ChatTools;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +37,6 @@ public class AIService {
     private final VectorStore vectorStore;
 
     private final LoggingAdvisor loggingAdvisor;
-    private final ChatTools chatTools;
     private final QueryOrchestrator queryOrchestrator;
     private final JsonHelper jsonHelper;
 
